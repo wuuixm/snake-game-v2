@@ -1,0 +1,296 @@
+/* ============================================================
+   🎨 扁平 · 童趣 · 浅色系 主题 — Tailwind CSS v4
+   ============================================================ */
+@import "tailwindcss";
+
+/* ---------- 自定义主题色 ---------- */
+@theme {
+    --color-fun-cream: #fff8f0;
+    --color-fun-pink: #ff6b9d;
+    --color-fun-coral: #ff6b6b;
+    --color-fun-orange: #ff9f43;
+    --color-fun-yellow: #ffd93d;
+    --color-fun-mint: #6bcb77;
+    --color-fun-teal: #4ecdc4;
+    --color-fun-sky: #4d96ff;
+    --color-fun-blue: #6c5ce7;
+    --color-fun-lavender: #a29bfe;
+    --color-fun-card: #ffffff;
+    --color-fun-text: #2d3436;
+    --color-fun-soft: #f5f0eb;
+    --color-fun-border: #e8e0d8;
+    --color-fun-gray: #b2bec3;
+}
+
+/* ---------- 全局 ---------- */
+body {
+    font-family:
+        "Segoe UI", "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+    background-color: var(--color-fun-cream);
+    color: var(--color-fun-text);
+    margin: 0;
+    min-height: 100vh;
+}
+::selection {
+    background-color: var(--color-fun-yellow);
+    color: var(--color-fun-text);
+}
+
+/* ---------- 自定义滚动条 ---------- */
+::-webkit-scrollbar {
+    width: 6px;
+}
+::-webkit-scrollbar-track {
+    background: var(--color-fun-soft);
+    border-radius: 3px;
+}
+::-webkit-scrollbar-thumb {
+    background: var(--color-fun-gray);
+    border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: #9ca3af;
+}
+
+/* ---------- 工具类（Tailwind v4: 每个类独立写完整，不嵌套 @apply） ---------- */
+
+/* --- 按钮基类 --- */
+.fun-btn {
+    font-weight: 700;
+    border-radius: 1rem;
+    border-width: 2px;
+    transition: all 0.2s;
+    cursor: pointer;
+    user-select: none;
+}
+.fun-btn:active {
+    transform: scale(0.9);
+}
+
+.fun-btn-primary {
+    font-weight: 700;
+    border-radius: 1rem;
+    border-width: 2px;
+    transition: all 0.2s;
+    cursor: pointer;
+    user-select: none;
+    background-color: var(--color-fun-coral);
+    color: white;
+    border-color: var(--color-fun-coral);
+}
+.fun-btn-primary:hover {
+    background-color: white;
+    color: var(--color-fun-coral);
+}
+.fun-btn-primary:active {
+    transform: scale(0.9);
+}
+
+.fun-btn-secondary {
+    font-weight: 700;
+    border-radius: 1rem;
+    border-width: 2px;
+    transition: all 0.2s;
+    cursor: pointer;
+    user-select: none;
+    background-color: white;
+    color: var(--color-fun-text);
+    border-color: var(--color-fun-border);
+}
+.fun-btn-secondary:hover {
+    border-color: var(--color-fun-gray);
+}
+.fun-btn-secondary:active {
+    transform: scale(0.9);
+}
+
+.fun-btn-green {
+    font-weight: 700;
+    border-radius: 1rem;
+    border-width: 2px;
+    transition: all 0.2s;
+    cursor: pointer;
+    user-select: none;
+    background-color: var(--color-fun-mint);
+    color: white;
+    border-color: var(--color-fun-mint);
+}
+.fun-btn-green:hover {
+    background-color: white;
+    color: var(--color-fun-mint);
+}
+.fun-btn-green:active {
+    transform: scale(0.9);
+}
+
+.fun-btn-yellow {
+    font-weight: 700;
+    border-radius: 1rem;
+    border-width: 2px;
+    transition: all 0.2s;
+    cursor: pointer;
+    user-select: none;
+    background-color: var(--color-fun-yellow);
+    color: var(--color-fun-text);
+    border-color: var(--color-fun-yellow);
+}
+.fun-btn-yellow:hover {
+    background-color: white;
+}
+.fun-btn-yellow:active {
+    transform: scale(0.9);
+}
+
+.fun-btn-sky {
+    font-weight: 700;
+    border-radius: 1rem;
+    border-width: 2px;
+    transition: all 0.2s;
+    cursor: pointer;
+    user-select: none;
+    background-color: var(--color-fun-sky);
+    color: white;
+    border-color: var(--color-fun-sky);
+}
+.fun-btn-sky:hover {
+    background-color: white;
+    color: var(--color-fun-sky);
+}
+.fun-btn-sky:active {
+    transform: scale(0.9);
+}
+
+/* --- 卡片 --- */
+.fun-card {
+    background-color: white;
+    border-radius: 1.5rem;
+    border-width: 2px;
+    border-color: var(--color-fun-border);
+    padding: 1.25rem;
+    transition: all 0.2s;
+}
+.fun-card-accent {
+    background-color: white;
+    border-radius: 1.5rem;
+    border-width: 2px;
+    border-color: var(--color-fun-border);
+    padding: 1.25rem;
+    transition: all 0.2s;
+    border-left-width: 6px;
+}
+
+/* 悬停时才显示左边装饰色 */
+.fun-card-accent-hover {
+    background-color: white;
+    border-radius: 1.5rem;
+    border-width: 2px;
+    border-color: var(--color-fun-border);
+    padding: 1.25rem;
+    transition: all 0.2s;
+}
+.fun-card-accent-hover:hover {
+    border-left-width: 8px;
+}
+
+/* --- 输入框 --- */
+.fun-input {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border-radius: 1rem;
+    border-width: 2px;
+    border-color: var(--color-fun-border);
+    background-color: white;
+    color: var(--color-fun-text);
+    font-weight: 500;
+    transition: all 0.2s;
+}
+.fun-input::placeholder {
+    color: var(--color-fun-gray);
+}
+.fun-input:focus {
+    outline: none;
+    border-color: var(--color-fun-sky);
+    box-shadow: 0 0 0 2px
+        color-mix(in srgb, var(--color-fun-sky) 20%, transparent);
+}
+
+/* --- 文字展示徽章 --- */
+.fun-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    border-width: 2px;
+}
+
+/* ============================================================
+   动画
+   ============================================================ */
+
+/* 弹跳 */
+@keyframes bounce-in {
+    0% {
+        transform: scale(0.5);
+        opacity: 0;
+    }
+    60% {
+        transform: scale(1.05);
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+.animate-bounce-in {
+    animation: bounce-in 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+/* 浮动 — 大幅摆动 */
+@keyframes float {
+    0%,
+    100% {
+        transform: translateY(0px);
+    }
+    50% {
+        transform: translateY(-48px);
+    }
+}
+.animate-float {
+    animation: float 4s ease-in-out infinite;
+}
+
+/* 抖动 */
+@keyframes wiggle {
+    0%,
+    100% {
+        transform: rotate(0deg);
+    }
+    25% {
+        transform: rotate(-5deg);
+    }
+    75% {
+        transform: rotate(5deg);
+    }
+}
+.animate-wiggle:hover {
+    animation: wiggle 0.3s ease-in-out;
+}
+
+/* 闪烁（用于分数变化等） */
+@keyframes score-pop {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.3);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+.animate-score-pop {
+    animation: score-pop 0.3s ease-out;
+}

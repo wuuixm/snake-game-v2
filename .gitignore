@@ -1,0 +1,31 @@
+.pio
+# ESP32 本地配置文件（含 WiFi 密码，勿提交）
+esp32s3/src/config.h
+
+target/
+# Rust/Cargo
+**/target/
+Cargo.lock
+
+# IDE/Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# System
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Python
+__pycache__/
+*.pyc
+
+# Node
+node_modules/
+
+# PlatformIO
+.pio/

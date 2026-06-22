@@ -1,0 +1,24 @@
+[package]
+name = "snake-game-server"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+# 1. 我们的公共数据契约库
+common = { path = "../common" }
+
+# 2. 网络与异步核心
+axum = { version = "0.7", features = ["ws"] } # 开启 WebSocket 支持
+tokio = { version = "1.0", features = ["full"] }
+tower-http = { version = "0.5", features = ["cors"] } # 解决局域网跨域问题
+futures-util = "0.3"
+
+# 3. 序列化与安全
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+bcrypt = "0.15"
+
+# 4. 数据库相关
+sqlx = { version = "0.8", features = [ "runtime-tokio", "tls-rustls", "postgres", "chrono" ] }
+chrono = { version = "0.4", features = ["serde"] }
+rand = { version = "0.8", features = ["std_rng"] }

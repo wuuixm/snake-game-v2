@@ -1,0 +1,8 @@
+# /Cargo.toml (最外层的总配置文件)
+[workspace]
+members = [
+    "common",
+    "snake-game-server",
+    "snake-game-client/src-tauri"  # 注意：这里要指向 Tauri 的 Rust 后端所在目录
+]
+resolver = "2"
