@@ -211,8 +211,8 @@ function backToLobbyFromGameOver() {
 }
 
 /**
- * 一键重置客户端所有状态：断开 WS、清空房间/游戏/锦标赛状态、回到 LOBBY。
- * 用于出现状态 bug 时手动恢复，不清除登录状态。
+ * 一键重置：除登录状态外，清空所有房间/游戏/锦标赛/用户设置，回到 LOBBY。
+ * 用于出现状态 bug 时手动恢复。
  */
 function resetClient() {
   _intentionalDisconnect = true;
@@ -221,6 +221,8 @@ function resetClient() {
   resetRoomState();
   resetGameplayState();
   resetTournamentState();
+  // 保留登录状态，重置其他用户设置
+  state.userColor = "#10b981";
   state.currentView = "LOBBY";
   state.roomList = [];
 }

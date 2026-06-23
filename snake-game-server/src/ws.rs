@@ -95,9 +95,8 @@ async fn handle_socket(socket: WebSocket, state: Arc<AppState>) {
                         new_code
                     };
 
-                    let room_arc = Arc::new(tokio::sync::RwLock::new(GameRoom::new(
-                        final_code.clone(),
-                    )));
+                    let room_arc =
+                        Arc::new(tokio::sync::RwLock::new(GameRoom::new(final_code.clone())));
                     rooms.insert(final_code.clone(), room_arc.clone());
 
                     let game_mode = match mode.as_str() {
@@ -123,8 +122,7 @@ async fn handle_socket(socket: WebSocket, state: Arc<AppState>) {
 
                     tokio::spawn(async move {
                         while let Ok(server_msg) = broadcast_rx.recv().await {
-                            let json_str =
-                                serde_json::to_string(&server_msg).unwrap_or_default();
+                            let json_str = serde_json::to_string(&server_msg).unwrap_or_default();
                             let mut s = sender_clone.lock().await;
                             if s.send(Message::Text(json_str)).await.is_err() {
                                 break;
@@ -161,10 +159,8 @@ async fn handle_socket(socket: WebSocket, state: Arc<AppState>) {
                     let mut s = sender.lock().await;
                     let _ = s
                         .send(Message::Text(
-                            serde_json::to_string(&ServerMessage::RoomList {
-                                rooms: room_list,
-                            })
-                            .unwrap(),
+                            serde_json::to_string(&ServerMessage::RoomList { rooms: room_list })
+                                .unwrap(),
                         ))
                         .await;
                 }
@@ -192,15 +188,21 @@ async fn handle_socket(socket: WebSocket, state: Arc<AppState>) {
                         }
                     }
 
-                    let mut rooms = state.rooms.write().await;
-                    let room_arc = rooms
-                        .entry(room_code.clone())
-                        .or_insert_with(|| {
-                            Arc::new(tokio::sync::RwLock::new(GameRoom::new(
-                                room_code.clone(),
-                            )))
-                        })
-                        .clone();
+                    // 仅加入已有房间 — 不允许自动创建
+                    let rooms = state.rooms.read().await;
+                    let Some(room_arc) = rooms.get(&room_code).cloned() else {
+                        let mut s = sender.lock().await;
+                        let _ = s
+                            .send(Message::Text(
+                                serde_json::to_string(&ServerMessage::Error {
+                                    message: format!("房间 {} 不存在，请先在客户端创建", room_code),
+                                })
+                                .unwrap(),
+                            ))
+                            .await;
+                        continue;
+                    };
+                    drop(rooms);
 
                     let game_mode = match mode.as_str() {
                         "Tournament" => common::GameMode::Tournament,
@@ -224,10 +226,8 @@ async fn handle_socket(socket: WebSocket, state: Arc<AppState>) {
                         };
                         let _ = s
                             .send(Message::Text(
-                                serde_json::to_string(&ServerMessage::Error {
-                                    message: err_msg,
-                                })
-                                .unwrap(),
+                                serde_json::to_string(&ServerMessage::Error { message: err_msg })
+                                    .unwrap(),
                             ))
                             .await;
                         continue;
@@ -245,8 +245,7 @@ async fn handle_socket(socket: WebSocket, state: Arc<AppState>) {
 
                     tokio::spawn(async move {
                         while let Ok(server_msg) = broadcast_rx.recv().await {
-                            let json_str =
-                                serde_json::to_string(&server_msg).unwrap_or_default();
+                            let json_str = serde_json::to_string(&server_msg).unwrap_or_default();
                             let mut s = sender_clone.lock().await;
                             if s.send(Message::Text(json_str)).await.is_err() {
                                 break;
@@ -272,9 +271,7 @@ async fn handle_socket(socket: WebSocket, state: Arc<AppState>) {
                             let status = build_room_status(&room);
                             let mut s = sender.lock().await;
                             let _ = s
-                                .send(Message::Text(
-                                    serde_json::to_string(&status).unwrap(),
-                                ))
+                                .send(Message::Text(serde_json::to_string(&status).unwrap()))
                                 .await;
                         }
                     }
@@ -322,20 +319,12 @@ async fn handle_socket(socket: WebSocket, state: Arc<AppState>) {
                                     let _ =
                                         room.tx.send(ServerMessage::TournamentStage(stage_info));
                                     let _ = room.tx.send(ServerMessage::GameStart);
-                                    spawn_game_loop(
-                                        room_arc.clone(),
-                                        state.db_pool.clone(),
-                                        true,
-                                    );
+                                    spawn_game_loop(room_arc.clone(), state.db_pool.clone(), true);
                                 }
                                 common::GameMode::Classic => {
                                     room.init_game();
                                     let _ = room.tx.send(ServerMessage::GameStart);
-                                    spawn_game_loop(
-                                        room_arc.clone(),
-                                        state.db_pool.clone(),
-                                        false,
-                                    );
+                                    spawn_game_loop(room_arc.clone(), state.db_pool.clone(), false);
                                 }
                             }
                         }
@@ -479,8 +468,7 @@ fn spawn_game_loop(
                 let r = room_arc.read().await;
                 r.tick_rate_ms
             };
-            let mut interval =
-                tokio::time::interval(std::time::Duration::from_millis(interval_ms));
+            let mut interval = tokio::time::interval(std::time::Duration::from_millis(interval_ms));
             interval.tick().await; // 吞掉首个即时触发
 
             loop {
@@ -529,17 +517,14 @@ fn spawn_game_loop(
                     // 锦标赛：推进到下一阶段
                     match room.advance_tournament() {
                         Some(stage_info) => {
-                            let _ =
-                                room.tx.send(ServerMessage::TournamentStage(stage_info));
+                            let _ = room.tx.send(ServerMessage::TournamentStage(stage_info));
                             let _ = room.tx.send(ServerMessage::GameStart);
                             continue; // 继续外循环，开始下一阶段游戏
                         }
                         None => {
                             // 锦标赛结束
                             if let Some(result) = room.tournament_result() {
-                                let _ = room
-                                    .tx
-                                    .send(ServerMessage::TournamentResult(result));
+                                let _ = room.tx.send(ServerMessage::TournamentResult(result));
                             }
                             let _ = room.tx.send(ServerMessage::GameOver {
                                 winner_username: winner,
